@@ -4,4 +4,4 @@ name = "clock"
 version = "2.4.0"
 
 [dependencies]
-time = "0.3.37"
+time = "0.3.36"
