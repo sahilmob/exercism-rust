@@ -1,6 +1,7 @@
 use std::fmt;
 use time::{Date, Duration, PrimitiveDateTime, Time};
 
+#[derive(Debug)]
 pub struct Clock {
     time: PrimitiveDateTime,
 }
@@ -8,7 +9,7 @@ pub struct Clock {
 impl Clock {
     pub fn new(hours: i32, minutes: i32) -> Self {
         let initial_time = PrimitiveDateTime::new(
-            Date::from_ordinal_date(1990, 1).unwrap(),
+            Date::from_calendar_date(1989, time::Month::December, 31).unwrap(),
             Time::from_hms(0, 0, 0).unwrap(),
         ) + Duration::hours(hours.try_into().unwrap())
             + Duration::minutes(minutes.try_into().unwrap());
@@ -36,14 +37,5 @@ impl fmt::Display for Clock {
             format!("{:0>2}", self.time.hour()),
             format!("{:0>2}", self.time.minute()),
         )
-    }
-}
-
-impl fmt::Debug for Clock {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Point")
-            .field("hours", &self.time.hour())
-            .field("minutes", &self.time.minute())
-            .finish()
     }
 }
