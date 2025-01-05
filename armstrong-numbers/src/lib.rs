@@ -4,7 +4,6 @@ pub fn is_armstrong_number(num: u32) -> bool {
 
     num_str
         .chars()
-        .map(|num| num.to_digit(10).unwrap().pow(len))
-        .sum::<u32>()
+        .fold(0, |acc, num| num.to_digit(10).unwrap().pow(len) + acc)
         == num
 }
