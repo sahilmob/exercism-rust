@@ -1,9 +1,5 @@
 pub fn square(s: u32) -> u64 {
-    if s == 1 {
-        1
-    } else {
-        2 * square(s - 1)
-    }
+    2_u64.pow(s - 1)
 }
 
 pub fn total() -> u64 {
