@@ -6,7 +6,7 @@ pub fn factors(n: u64) -> Vec<u64> {
         if n % i == 0 {
             while n % i == 0 {
                 result.push(i);
-                n = n / i
+                n /= i
             }
         }
         i += 1
