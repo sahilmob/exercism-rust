@@ -4,11 +4,9 @@ pub fn series(digits: &str, len: usize) -> Vec<String> {
     }
 
     digits
-        .split("")
-        .filter(|s| !s.is_empty())
-        .map(|v| v.to_string())
-        .collect::<Vec<String>>()
+        .chars()
+        .collect::<Vec<char>>()
         .windows(len)
-        .map(|w| w.join(""))
+        .map(|w| w.iter().collect::<String>())
         .collect()
 }
