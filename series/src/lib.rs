@@ -4,7 +4,6 @@ pub fn series(digits: &str, len: usize) -> Vec<String> {
     }
 
     digits
-        .to_string()
         .split("")
         .filter(|s| !s.is_empty())
         .map(|v| v.to_string())
