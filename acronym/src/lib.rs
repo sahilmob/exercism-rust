@@ -1,21 +1,13 @@
 pub fn abbreviate(phrase: &str) -> String {
     phrase
-        .split(|x: char| x == '-' || x.is_whitespace())
-        .filter(|v| !v.is_empty())
-        .map(|w| {
-            let mut prev_char = 'a';
-            let mut result = String::new();
-
-            w.chars().for_each(|c| {
-                if result.len() == 0 && c.is_alphabetic()
-                    || c.is_uppercase() && !prev_char.is_uppercase()
-                {
-                    result.push(c.to_ascii_uppercase());
-                }
-                prev_char = c;
-            });
-
-            result
+        .split(|c: char| c.is_whitespace() || c == '-' || c == '_')
+        .flat_map(|word| {
+            word.chars().take(1).chain(
+                word.chars()
+                    .skip_while(|c| c.is_uppercase())
+                    .filter(|c| c.is_uppercase()),
+            )
         })
         .collect::<String>()
+        .to_uppercase()
 }
