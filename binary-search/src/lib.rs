@@ -1,11 +1,17 @@
-use core::cmp::Ordering;
+pub fn find<T: Ord, V: AsRef<[T]>>(a: V, item: T) -> Option<usize> {
+    let a = a.as_ref();
 
-pub fn find<R: AsRef<[T]>, T: Ord>(space: R, key: T) -> Option<usize> {
-    let space = space.as_ref();
-    let mid = space.len() / 2;
-    match key.cmp(space.get(mid)?) {
-        Ordering::Equal => Some(mid),
-        Ordering::Less => find(&space[..mid], key),
-        Ordering::Greater => find(&space[mid + 1..], key).map(|i| i + mid + 1),
+    let mut low = 0;
+    let mut high = a.len();
+    while low < high {
+        let mid = (low + high) / 2;
+        if a[mid] > item {
+            high = mid;
+        } else if a[mid] < item {
+            low = mid + 1;
+        } else {
+            return Some(mid);
+        }
     }
+    None
 }
