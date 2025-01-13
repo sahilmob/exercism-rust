@@ -1,21 +1,11 @@
 /// Determines whether the supplied string is a valid ISBN number
 pub fn is_valid_isbn(isbn: &str) -> bool {
-    let isbn = isbn.chars().filter(|c| c != &'-');
-    let count = isbn.clone().count();
-
-    if count != 10 {
-        return false;
-    }
-
-    match isbn.enumerate().try_fold(0, |acc, (i, v)| match v {
-        v if i == count - 1 && v == 'X' => Ok(acc + 10),
-        v if v.is_alphabetic() => Err(()),
-        v => Ok(v
-            .to_digit(10)
-            .map(|digit| acc + (digit * (10 - i) as u32))
-            .unwrap()),
-    }) {
-        Ok(v) => v % 11 == 0,
-        Err(_) => false,
-    }
+    isbn.chars()
+        .fold((0, 0, true), |(c, s, v), curr| match curr {
+            '-' => (c, s, v),
+            'X' if c == 9 => (c + 1, (s + 10) % 11, v),
+            '0'..='9' => (c + 1, (s + curr.to_digit(10).unwrap() * (10 - c)) % 11, v),
+            _ => return (c, s, false),
+        })
+        == (10, 0, true)
 }
