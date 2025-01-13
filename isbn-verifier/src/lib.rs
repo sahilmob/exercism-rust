@@ -7,17 +7,13 @@ pub fn is_valid_isbn(isbn: &str) -> bool {
         return false;
     }
 
-    match isbn.enumerate().try_fold(0, |acc, (i, v)| {
-        if v.is_alphabetic() {
-            if i == count - 1 && v == 'X' {
-                return Ok(acc + 10);
-            }
-            return Err(());
-        }
-
-        Ok(v.to_digit(10)
+    match isbn.enumerate().try_fold(0, |acc, (i, v)| match v {
+        v if i == count - 1 && v == 'X' => Ok(acc + 10),
+        v if v.is_alphabetic() => Err(()),
+        v => Ok(v
+            .to_digit(10)
             .map(|digit| acc + (digit * (10 - i) as u32))
-            .unwrap())
+            .unwrap()),
     }) {
         Ok(v) => v % 11 == 0,
         Err(_) => false,
