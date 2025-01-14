@@ -1,12 +1,7 @@
 pub fn encode(source: &str) -> String {
-    let mut result = String::new();
-
-    if source.is_empty() {
-        return result;
-    }
-
     let mut current_char = '1';
     let mut current_char_count = 0;
+    let mut result = String::new();
 
     for v in source.chars().chain("1".chars()) {
         if current_char == '1' {
@@ -31,11 +26,6 @@ pub fn encode(source: &str) -> String {
 
 pub fn decode(source: &str) -> String {
     let mut result = String::new();
-
-    if source.is_empty() {
-        return result;
-    }
-
     let mut current_count = String::new();
 
     for v in source.chars() {
