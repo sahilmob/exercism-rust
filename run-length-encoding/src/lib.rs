@@ -25,20 +25,17 @@ pub fn encode(source: &str) -> String {
 }
 
 pub fn decode(source: &str) -> String {
+    let mut current_count = 0;
     let mut result = String::new();
-    let mut current_count = String::new();
 
     for v in source.chars() {
         if v.is_numeric() {
-            current_count.push(v);
-        } else if current_count.is_empty() {
+            current_count = current_count * 10 + v.to_digit(10).unwrap();
+        } else if current_count == 0 {
             result.push(v);
         } else {
-            result.push_str(
-                &v.to_string()
-                    .repeat(current_count.parse::<usize>().unwrap()),
-            );
-            current_count = String::new();
+            result.push_str(&v.to_string().repeat(current_count as usize));
+            current_count = 0;
         }
     }
 
