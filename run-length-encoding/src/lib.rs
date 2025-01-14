@@ -34,7 +34,10 @@ pub fn decode(source: &str) -> String {
         } else if current_count.is_empty() {
             result.push(v);
         } else {
-            (0..current_count.parse::<i32>().unwrap()).for_each(|_| result.push(v));
+            result.push_str(
+                &v.to_string()
+                    .repeat(current_count.parse::<usize>().unwrap()),
+            );
             current_count = String::new();
         }
     }
