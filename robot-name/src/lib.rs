@@ -23,7 +23,7 @@ impl State {
                 let second_char = self.second_char;
                 match second_char == 'Z' {
                     true => {
-                        self.first_char = *('A'..'Z')
+                        self.first_char = *('A'..='Z')
                             .filter(|c| c.gt(&first_char))
                             .collect::<Vec<char>>()
                             .first()
@@ -31,7 +31,7 @@ impl State {
                         self.second_char = 'A'
                     }
                     false => {
-                        self.second_char = *('A'..'Z')
+                        self.second_char = *('A'..='Z')
                             .filter(|c| c.gt(&second_char))
                             .collect::<Vec<char>>()
                             .first()
