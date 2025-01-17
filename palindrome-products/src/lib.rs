@@ -23,13 +23,15 @@ impl Palindrome {
 }
 
 fn is_palindrome(value: u64) -> bool {
-    let mut reverse = 0;
-    let mut r = value;
-    while r > 0 {
-        reverse = reverse * 10 + r % 10;
-        r /= 10;
-    }
-    value == reverse
+    let num_str = value.to_string();
+    num_str == num_str.chars().rev().collect::<String>()
+    // let mut reverse = 0;
+    // let mut r = value;
+    // while r > 0 {
+    //     reverse = reverse * 10 + r % 10;
+    //     r /= 10;
+    // }
+    // value == reverse
 }
 
 pub fn palindrome_products(min: u64, max: u64) -> Option<(Palindrome, Palindrome)> {

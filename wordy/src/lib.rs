@@ -1,5 +1,52 @@
 use regex::Regex;
 
+struct ParserState {
+    index: usize,
+    target: String,
+    is_error: bool,
+    result: String,
+    error_message: String,
+}
+
+impl ParserState {
+    fn new(target: String) -> Self {
+        Self {
+            target,
+            index: 0,
+            is_error: false,
+            result: String::new(),
+            error_message: String::new(),
+        }
+    }
+}
+
+trait ParserTransformer {
+    fn run(state: ParserState) -> ParserState;
+    fn update_state(state: ParserState, index: usize, result: String) -> ParserState {
+        ParserState {
+            index,
+            result,
+            ..state
+        }
+    }
+
+    fn update_error(
+        state: ParserState,
+        index: usize,
+        is_error: bool,
+        error: String,
+    ) -> ParserState {
+        ParserState {
+            index,
+            is_error,
+            error_message: error,
+            ..state
+        }
+    }
+}
+
+struct LettersParserTransformer {}
+
 static PLUS: &str = "plus";
 static MINUS: &str = "minus";
 static MULTIPLY: &str = "multiplied by";
