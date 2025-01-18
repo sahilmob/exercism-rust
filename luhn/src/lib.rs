@@ -1,4 +1,4 @@
-/// Check a Luhn checksum.
+/// Check a Luhn checksum
 pub fn is_valid(code: &str) -> bool {
     code.chars()
         .rev()
