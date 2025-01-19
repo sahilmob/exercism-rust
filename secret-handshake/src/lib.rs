@@ -1,25 +1,25 @@
 pub fn actions(n: u8) -> Vec<&'static str> {
-    let actions: Vec<(u8, &'static str)> = Vec::from([
+    let mut reverse = false;
+
+    let mut result: Vec<&'static str> = [
         (1, "wink"),
         (2, "double blink"),
         (4, "close your eyes"),
         (8, "jump"),
         (16, "reverse"),
-    ]);
-
-    let mut reverse = false;
-    let mut result: Vec<&'static str> = Vec::new();
-
-    for (b, a) in actions {
-        println!("{a}");
-        if n & b > 0 {
-            if a != "reverse" {
-                result.push(a);
-            } else {
-                reverse = true;
-            }
+    ]
+    .to_vec()
+    .iter()
+    .filter(|(b, _)| n & b > 0)
+    .filter(|(_, a)| {
+        if a == &"reverse" {
+            reverse = true;
+            return false;
         }
-    }
+        true
+    })
+    .map(|(_, a)| *a)
+    .collect();
 
     if reverse {
         result.reverse();
