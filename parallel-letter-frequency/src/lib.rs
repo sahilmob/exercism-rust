@@ -1,53 +1,39 @@
 use std::collections::HashMap;
-use std::sync::mpsc;
 use std::thread;
 
 pub fn frequency(input: &[&str], worker_count: usize) -> HashMap<char, usize> {
-    let mut result: HashMap<char, usize> = HashMap::new();
-
-    if input.is_empty() {
-        return result;
-    }
-
-    let (tx, rx) = mpsc::channel();
-
-    // Determine how many chunks to process
-    let chunk_size = (input.len() + worker_count - 1) / worker_count;
-
-    // Create threads
-    let handles: Vec<_> = input
-        .chunks(chunk_size)
-        .map(|chunk| {
-            let tx = tx.clone();
-            // Convert borrowed strings to owned strings
-            let chunk = chunk.join("").to_string();
-
-            thread::spawn(move || {
-                let mut local_result: HashMap<char, usize> = HashMap::new();
-                chunk.chars().filter(|c| c.is_alphabetic()).for_each(|c| {
-                    *local_result
-                        .entry(c.to_lowercase().next().unwrap())
-                        .or_insert(0) += 1;
-                });
-                tx.send(local_result).unwrap();
-            })
-        })
-        .collect();
-
-    // Drop the original sender to prevent deadlock
-    drop(tx);
-
-    // Collect results from all threads
-    while let Ok(local_map) = rx.recv() {
-        for (key, value) in local_map {
-            *result.entry(key).or_insert(0) += value;
+    let counter = |input: &[&str]| {
+        let mut map = HashMap::new();
+        for line in input {
+            for c in line
+                .chars()
+                .filter(|c| c.is_alphabetic())
+                .map(|c| c.to_ascii_lowercase())
+            {
+                *map.entry(c).or_default() += 1;
+            }
         }
-    }
+        map
+    };
 
-    // Wait for all threads to complete
-    for handle in handles {
-        handle.join().unwrap();
-    }
+    // redirect to the best implementation.
+    match input.len() {
+        0 => HashMap::new(),
+        n if n < 500 => counter(input),
+        _ => thread::scope(|s| {
+            let mut handles = Vec::with_capacity(worker_count);
+            for lines in input.chunks(input.len() / worker_count + 1) {
+                handles.push(s.spawn(|| counter(lines)))
+            }
 
-    result
+            let mut map = handles.pop().unwrap().join().unwrap();
+            for res in handles {
+                res.join().unwrap().into_iter().for_each(|(k, v)| {
+                    *map.entry(k).or_default() += v;
+                })
+            }
+
+            map
+        }),
+    }
 }
